@@ -121,7 +121,6 @@ namespace WoaW.RnD.MMF
         }
         #endregion
 
-
         #region public API
         public void Connect()
         {
@@ -158,10 +157,16 @@ namespace WoaW.RnD.MMF
             var set = GetSet<T>();
             set.Add(data);
         }
-        public void Update<T>(object data)
+        public void Replace<T>(object sourceObject, object targetObject)
         {
-            var type = data.GetType();
-            GetSet<T>();
+            if (sourceObject.GetType() != targetObject.GetType())
+                throw new ArgumentException(nameof(sourceObject), nameof(targetObject));
+
+            var setTemp = GetSet<T>();
+            var c = setTemp.SingleOrDefault(x => x == sourceObject);
+            var index = setTemp.IndexOf(sourceObject);
+            setTemp.RemoveAt(index);
+            setTemp.Insert(index, targetObject);
         }
         public void Delete(object data)
         {
@@ -197,7 +202,7 @@ namespace WoaW.RnD.MMF
         }
         public List<object> Load()
         {
-            using (var mmf = MemoryMappedFile.CreateFromFile(_path, FileMode.Open ))
+            using (var mmf = MemoryMappedFile.CreateFromFile(_path, FileMode.Open))
             {
                 using (var accessor = mmf.CreateViewAccessor())
                 {

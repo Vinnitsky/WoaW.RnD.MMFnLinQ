@@ -7,7 +7,7 @@ namespace WoaW.RnD.MMF.UnitTests
     public class MMFUnitTests
     {
         [TestMethod]
-        public void TestMethod1()
+        public void Update_SuccessTestMethod()
         {
             InMemDb.Update();
 
@@ -69,6 +69,22 @@ namespace WoaW.RnD.MMF.UnitTests
             db.Add(new MyData() { Id="4", Name="4", Description="4"});
             db.Add(new MyData() { Id="5", Name="5", Description="5"});
             db.Save< MyData>();
+        }
+        [TestMethod]
+        public void Replace_SuccessTest()
+        {
+            var db = new InMemDb();
+            var obj1 = new MyData() { Id = "1", Name = "1", Description = "1" };
+            db.Add(obj1);
+            db.Add(new MyData() { Id="2", Name="2", Description="2"});
+            db.Add(new MyData() { Id="3", Name="3", Description="3"});
+            db.Add(new MyData() { Id="4", Name="4", Description="4"});
+            db.Add(new MyData() { Id="5", Name="5", Description="5"});
+            var newObject = new MyData() { Id = "6", Name = "6", Description = "6" };
+            db.Replace<MyData>(obj1, newObject);
+            var set = db.Get<MyData>();
+
+            Assert.AreEqual(newObject, set[0]);
         }
         [TestMethod]
         public void Load_SuccessTest()
